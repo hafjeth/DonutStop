@@ -7,90 +7,1354 @@
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+
+    <style>
+    /* ============================================================
+       GLOBAL SMOOTH SCROLL
+    ============================================================ */
+    html {
+        scroll-behavior: smooth;
+    }
+    /* Offset anchor targets so navbar (64px) doesn't cover them */
+    #register,
+    #section-menu,
+    #section-usp,
+    #section-benefits {
+        scroll-margin-top: 72px;
+    }
+
+    /* ============================================================
+       STICKY NAVBAR
+    ============================================================ */
+    .navbar {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 999;
+        background: rgba(255,255,255,0.85);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid rgba(255, 89, 123, 0.12);
+        padding: 0 32px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: background 0.3s, box-shadow 0.3s;
+    }
+    .navbar.scrolled {
+        background: rgba(255,255,255,0.97);
+        box-shadow: 0 2px 20px rgba(255,89,123,0.10);
+    }
+    .nav-logo {
+        font-family: 'Pacifico', cursive;
+        font-size: 1.4rem;
+        color: #FF597B;
+        letter-spacing: 1px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .nav-logo-img {
+        width: 110px;
+        height: 50px;
+        border-radius: 10px;
+        object-fit: cover;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        line-height: 1;
+    }
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        list-style: none;
+        margin: 0; padding: 0;
+    }
+    .nav-links a {
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        color: #555;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #FF597B; }
+    .nav-cta {
+        background: #FF597B;
+        color: white !important;
+        padding: 8px 20px;
+        border-radius: 999px;
+        font-size: 0.8rem !important;
+        transition: background 0.2s, transform 0.2s !important;
+    }
+    .nav-cta:hover { background: #e04060 !important; transform: scale(1.05); }
+    .nav-hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        background: none;
+        border: none;
+    }
+    .nav-hamburger span {
+        display: block;
+        width: 24px; height: 2px;
+        background: #FF597B;
+        border-radius: 2px;
+        transition: 0.3s;
+    }
+
+    /* ============================================================
+       HERO SECTION — UPGRADED
+    ============================================================ */
+    .hero-section {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        padding-top: 64px; /* offset for navbar */
+        background: #FFF0F3;
+    }
+
+    /* Polka dot + sprinkle background pattern */
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+            radial-gradient(circle, rgba(255,89,123,0.13) 2px, transparent 2px),
+            radial-gradient(circle, rgba(255,142,158,0.08) 1px, transparent 1px);
+        background-size: 40px 40px, 20px 20px;
+        background-position: 0 0, 10px 10px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Gradient blobs */
+    .hero-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        opacity: 0.35;
+        pointer-events: none;
+        z-index: 0;
+    }
+    .hero-blob-1 {
+        width: 450px; height: 450px;
+        background: radial-gradient(circle, #FFB3C1, #FF597B);
+        top: -100px; right: -80px;
+    }
+    .hero-blob-2 {
+        width: 300px; height: 300px;
+        background: radial-gradient(circle, #FFE0B2, #FFCC80);
+        bottom: -60px; left: 80px;
+    }
+
+    /* ---- SPLIT LAYOUT ---- */
+    .hero-container {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: 48px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        width: 100%;
+    }
+    .hero-left { display: flex; flex-direction: column; align-items: flex-start; }
+    .hero-right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    /* Hero main donut image */
+    .hero-main-donut {
+        width: 420px;
+        max-width: 100%;
+        animation: heroDonutFloat 4s ease-in-out infinite;
+        filter: drop-shadow(0 30px 60px rgba(255,89,123,0.35));
+        position: relative;
+        z-index: 2;
+    }
+    @keyframes heroDonutFloat {
+        0%, 100% { transform: translateY(0) rotate(-3deg); }
+        50% { transform: translateY(-18px) rotate(3deg); }
+    }
+
+    /* Ring decoration behind main donut */
+    .hero-ring {
+        position: absolute;
+        width: 380px; height: 380px;
+        border-radius: 50%;
+        border: 3px dashed rgba(255,89,123,0.25);
+        animation: spin 20s linear infinite;
+        z-index: 1;
+    }
+    .hero-ring-2 {
+        width: 460px; height: 460px;
+        border: 2px dashed rgba(255,89,123,0.12);
+        animation: spin 30s linear infinite reverse;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Welcome badge */
+    .welcome-text {
+        display: inline-block;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 0.7rem;
+        letter-spacing: 3px;
+        color: #FF597B;
+        border: 1.5px solid #FF597B;
+        border-radius: 999px;
+        padding: 6px 18px;
+        margin-bottom: 18px;
+        opacity: 0;
+        animation: fadeSlideUp 0.6s ease forwards 0.2s;
+    }
+
+    /* Hero title */
+    .hero-title {
+        font-family: 'Pacifico', cursive;
+        font-size: clamp(3.5rem, 7vw, 6rem);
+        color: #FF597B;
+        line-height: 1.05;
+        margin: 0 0 16px;
+        opacity: 0;
+        animation: fadeSlideUp 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards 0.4s;
+    }
+
+    /* Description */
+    .hero-description {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 1.1rem;
+        color: #888;
+        margin-bottom: 28px;
+        opacity: 0;
+        animation: fadeSlideUp 0.6s ease forwards 0.6s;
+    }
+
+    /* Promo pill */
+    .promo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: white;
+        border: 1.5px solid #FFB3C1;
+        border-radius: 999px;
+        padding: 10px 22px;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 0.78rem;
+        letter-spacing: 1.5px;
+        color: #FF597B;
+        margin-bottom: 28px;
+        opacity: 0;
+        animation: fadeSlideUp 0.6s ease forwards 0.75s;
+        box-shadow: 0 4px 16px rgba(255,89,123,0.12);
+    }
+    .promo-pill .divider {
+        display: inline-block;
+        width: 1px;
+        height: 16px;
+        background: #FFB3C1;
+    }
+
+    /* CTA buttons row */
+    .hero-cta-row {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        opacity: 0;
+        animation: fadeSlideUp 0.6s ease forwards 0.9s;
+        flex-wrap: wrap;
+    }
+
+    /* Main CTA */
+    .btn-main-glow {
+        position: relative;
+        display: inline-block;
+        background: linear-gradient(135deg, #FF597B 0%, #FF8E9E 100%);
+        color: white;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+        padding: 16px 36px;
+        border-radius: 999px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        box-shadow: 0 0 0 0 rgba(255,89,123,0.5);
+        animation: ctaPulse 2.5s ease-in-out infinite 1.5s;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-main-glow::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(255,255,255,0);
+        transition: background 0.2s;
+    }
+    .btn-main-glow:hover {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 8px 30px rgba(255,89,123,0.45);
+    }
+    .btn-main-glow:hover::before { background: rgba(255,255,255,0.08); }
+    .btn-main-glow:active { transform: scale(0.98); }
+
+    /* Ripple effect on click */
+    .btn-main-glow .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.4);
+        transform: scale(0);
+        animation: rippleAnim 0.6s linear;
+        pointer-events: none;
+    }
+    @keyframes rippleAnim {
+        to { transform: scale(4); opacity: 0; }
+    }
+    @keyframes ctaPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(255,89,123,0.45); }
+        50% { box-shadow: 0 0 0 14px rgba(255,89,123,0); }
+    }
+
+    /* Secondary CTA */
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: #FF597B;
+        text-decoration: none;
+        letter-spacing: 1px;
+        transition: gap 0.2s;
+    }
+    .btn-secondary:hover { gap: 12px; }
+    .btn-secondary i { font-size: 0.75rem; }
+
+    /* ---- SOCIAL PROOF ---- */
+    .hero-social-proof {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 28px;
+        opacity: 0;
+        animation: fadeSlideUp 0.6s ease forwards 1.1s;
+    }
+    .stacked-avatars {
+        display: flex;
+    }
+    .stacked-avatars img {
+        width: 34px; height: 34px;
+        border-radius: 50%;
+        border: 2px solid white;
+        margin-left: -10px;
+        object-fit: cover;
+    }
+    .stacked-avatars img:first-child { margin-left: 0; }
+    .social-proof-text {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.82rem;
+        color: #888;
+        line-height: 1.4;
+    }
+    .social-proof-text strong {
+        display: block;
+        color: #444;
+        font-size: 0.88rem;
+    }
+    .stars-row { color: #FFB800; font-size: 0.75rem; letter-spacing: 1px; }
+
+    /* ---- COUNTDOWN TIMER ---- */
+    .hero-countdown {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255,89,123,0.07);
+        border: 1px solid rgba(255,89,123,0.2);
+        border-radius: 12px;
+        padding: 10px 18px;
+        margin-top: 20px;
+        opacity: 0;
+        animation: fadeSlideUp 0.6s ease forwards 1.25s;
+    }
+    .countdown-label {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #FF597B;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+    .countdown-label i { margin-right: 4px; }
+    .countdown-digits {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+    }
+    .cd-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .cd-num {
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #FF597B;
+        min-width: 32px;
+        text-align: center;
+        background: white;
+        border-radius: 6px;
+        padding: 2px 4px;
+        box-shadow: 0 2px 6px rgba(255,89,123,0.12);
+        transition: transform 0.15s;
+    }
+    .cd-lbl {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.55rem;
+        color: #aaa;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-top: 2px;
+    }
+    .cd-sep {
+        font-weight: 700;
+        color: #FF597B;
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    /* ---- FLOATING DONUTS (more + parallax) ---- */
+    .floating-item {
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+        will-change: transform;
+    }
+    .floating-item img { display: block; }
+
+    .donut-1 { top: 8%; left: 3%; }
+    .donut-1 img { width: 100px; animation: floatA 5s ease-in-out infinite; filter: drop-shadow(0 10px 20px rgba(255,89,123,0.2)); }
+
+    .donut-2 { bottom: 10%; right: 2%; }
+    .donut-2 img { width: 110px; animation: floatB 6s ease-in-out infinite 1s; filter: drop-shadow(0 10px 20px rgba(255,89,123,0.2)); }
+
+    .donut-3 { top: 15%; right: 5%; }
+    .donut-3 img { width: 65px; animation: floatC 4s ease-in-out infinite 0.5s; filter: drop-shadow(0 6px 12px rgba(255,89,123,0.15)); opacity: 0.7; }
+
+    .donut-4 { bottom: 20%; left: 5%; }
+    .donut-4 img { width: 55px; animation: floatA 7s ease-in-out infinite 2s; filter: drop-shadow(0 6px 12px rgba(255,89,123,0.15)); opacity: 0.6; }
+
+    .donut-5 { top: 50%; left: 1%; }
+    .donut-5 img { width: 45px; animation: floatB 5.5s ease-in-out infinite 3s; filter: drop-shadow(0 4px 8px rgba(255,89,123,0.1)); opacity: 0.5; }
+
+    /* Sprinkle decorations */
+    .sprinkle {
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+        border-radius: 3px;
+        opacity: 0.5;
+        animation: floatC 4s ease-in-out infinite;
+    }
+
+    @keyframes floatA {
+        0%, 100% { transform: translateY(0) rotate(-8deg); }
+        50% { transform: translateY(-20px) rotate(8deg); }
+    }
+    @keyframes floatB {
+        0%, 100% { transform: translateY(0) rotate(5deg) scale(1); }
+        50% { transform: translateY(-14px) rotate(-10deg) scale(1.05); }
+    }
+    @keyframes floatC {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        33% { transform: translateY(-10px) rotate(15deg); }
+        66% { transform: translateY(-5px) rotate(-10deg); }
+    }
+
+    /* ---- ANIMATIONS ---- */
+    @keyframes fadeSlideUp {
+        from { opacity: 0; transform: translateY(24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 900px) {
+        .hero-container {
+            grid-template-columns: 1fr;
+            text-align: center;
+            padding: 40px 24px;
+        }
+        .hero-left { align-items: center; }
+        .hero-right { display: none; } /* hide big donut on mobile, keep floaters subtle */
+        .hero-title { font-size: clamp(3rem, 12vw, 5rem); }
+        .nav-links { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: white; padding: 20px; gap: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .nav-links.open { display: flex; }
+        .nav-hamburger { display: flex; }
+        .donut-1 img { width: 65px; }
+        .donut-2 img { width: 70px; }
+        .donut-3, .donut-4, .donut-5 { display: none; }
+        .hero-cta-row { justify-content: center; }
+        .hero-social-proof { justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+        .navbar { padding: 0 16px; }
+        .hero-title { font-size: 3rem; }
+        .btn-main-glow { padding: 14px 28px; font-size: 0.8rem; }
+        .countdown-banner-inner { gap: 10px; }
+        .cb-text { font-size: 0.78rem; }
+    }
+
+    /* ============================================================
+       SECTION D: BRAND VALUE — REDESIGN v2
+    ============================================================ */
+    .brand-value-section {
+        position: relative;
+        background: linear-gradient(160deg, #1a1a2e 0%, #2d1b35 50%, #1a1a2e 100%);
+        padding: 80px 40px;
+        overflow: hidden;
+    }
+    .bv-bg-pattern {
+        position: absolute; inset: 0;
+        background-image:
+            radial-gradient(circle at 10% 60%, rgba(255,89,123,0.10) 0%, transparent 45%),
+            radial-gradient(circle at 90% 20%, rgba(255,178,200,0.08) 0%, transparent 40%),
+            radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px);
+        background-size: 100% 100%, 100% 100%, 30px 30px;
+        pointer-events: none;
+        z-index: 0;
+    }
+    .bv-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1.6fr;
+        gap: 64px;
+        align-items: start;
+    }
+    /* LEFT */
+    .bv-left-col { display: flex; flex-direction: column; gap: 24px; }
+    .bv-eyebrow {
+        display: inline-block;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.72rem; font-weight: 700;
+        letter-spacing: 3px; text-transform: uppercase;
+        color: #FF8E9E;
+        background: rgba(255,89,123,0.12);
+        border: 1px solid rgba(255,89,123,0.25);
+        padding: 6px 16px; border-radius: 999px;
+        width: fit-content;
+    }
+    .bv-headline {
+        font-family: 'Pacifico', cursive;
+        font-size: clamp(2rem, 3.5vw, 2.8rem);
+        color: white; line-height: 1.25; margin: 0;
+    }
+    .bv-headline span { color: #FF597B; }
+    .bv-sub {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.95rem; color: rgba(255,255,255,0.5);
+        line-height: 1.75; margin: 0;
+    }
+    .bv-stats-row {
+        display: flex; align-items: center; gap: 0;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px; padding: 20px 0; overflow: hidden;
+    }
+    .bv-stat { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .bv-stat-num {
+        font-family: 'Pacifico', cursive;
+        font-size: 1.8rem; color: #FF597B; line-height: 1;
+    }
+    .bv-stat-num sup { font-size: 0.9rem; }
+    .bv-stat-lbl {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.68rem; font-weight: 600;
+        color: rgba(255,255,255,0.45); text-align: center; line-height: 1.3;
+    }
+    .bv-stat-divider { width: 1px; height: 44px; background: rgba(255,255,255,0.08); flex-shrink: 0; }
+    .bv-cta-btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: linear-gradient(135deg, #FF597B, #FF8E9E);
+        color: white; text-decoration: none;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700; font-size: 0.88rem; letter-spacing: 0.5px;
+        padding: 14px 28px; border-radius: 999px;
+        width: fit-content;
+        box-shadow: 0 8px 24px rgba(255,89,123,0.35);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .bv-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(255,89,123,0.45); }
+
+    /* RIGHT: 2x2 grid */
+    .bv-right-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    .bv-card {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 20px; padding: 26px 24px;
+        display: flex; flex-direction: column; gap: 12px;
+        backdrop-filter: blur(8px);
+        transition: transform 0.25s, background 0.25s, box-shadow 0.25s;
+    }
+    .bv-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    }
+    /* Card 2, 3, 4 - same pink as accent */
+    .bv-card.bv-card-green,
+    .bv-card.bv-card-blue,
+    .bv-card.bv-card-orange {
+        background: linear-gradient(135deg, #FF597B 0%, #FF8E9E 100%);
+        border-color: transparent;
+        box-shadow: 0 10px 36px rgba(255,89,123,0.32);
+    }
+    .bv-card.bv-card-green:hover,
+    .bv-card.bv-card-blue:hover,
+    .bv-card.bv-card-orange:hover {
+        background: linear-gradient(135deg, #ff4570 0%, #ff7d8e 100%);
+    }
+    .bv-card-accent {
+        background: linear-gradient(135deg, #FF597B 0%, #FF8E9E 100%);
+        border-color: transparent;
+        box-shadow: 0 10px 36px rgba(255,89,123,0.32);
+    }
+    .bv-card-accent .bv-card-title { color: white; }
+    .bv-card-accent .bv-card-desc  { color: rgba(255,255,255,0.82); }
+    .bv-card-accent .bv-card-tag   { background: rgba(255,255,255,0.2); color: white; }
+
+    .bv-card-icon-wrap {
+        width: 52px; height: 52px; border-radius: 14px;
+        background: rgba(255,255,255,0.30);
+        border: 1.5px solid rgba(255,255,255,0.5);
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(180,20,60,0.2);
+    }
+    .bv-card-accent .bv-card-icon-wrap { background: rgba(255,255,255,0.30); }
+    .bv-icon-green  { background: rgba(255,255,255,0.30); }
+    .bv-icon-blue   { background: rgba(255,255,255,0.30); }
+    .bv-icon-orange { background: rgba(255,255,255,0.30); }
+
+    .bv-card-body { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .bv-card-title {
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 800; font-size: 1rem; color: white; margin: 0;
+    }
+    .bv-card-desc {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.82rem; color: rgba(255,255,255,0.55);
+        line-height: 1.65; flex-grow: 1; margin: 0;
+    }
+    .bv-card-tag {
+        display: inline-flex; align-items: center; gap: 5px;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.68rem; font-weight: 700; letter-spacing: 0.3px;
+        padding: 4px 10px; border-radius: 999px;
+        background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);
+        width: fit-content; margin-top: auto;
+    }
+    .bv-tag-green  { background: rgba(255,255,255,0.2); color: white; }
+    .bv-tag-blue   { background: rgba(255,255,255,0.2); color: white; }
+    .bv-tag-orange { background: rgba(255,255,255,0.2); color: white; }
+
+    @media (max-width: 1000px) {
+        .bv-inner { grid-template-columns: 1fr; gap: 40px; }
+        .bv-right-col { grid-template-columns: 1fr 1fr; }
+        .brand-value-section { padding: 60px 24px; }
+    }
+    @media (max-width: 600px) {
+        .bv-right-col { grid-template-columns: 1fr; }
+    }
+
+    /* ============================================================
+       SECTION I: CALL TO ACTION
+    ============================================================ */
+    .section-cta {
+        position: relative;
+        background: linear-gradient(135deg, #FF597B 0%, #FF8E9E 50%, #FFB3C1 100%);
+        padding: 100px 40px;
+        overflow: hidden;
+        text-align: center;
+    }
+    /* Subtle radial glow */
+    .section-cta::before {
+        content: '';
+        position: absolute; inset: 0;
+        background:
+            radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.18) 0%, transparent 55%),
+            radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+        background-size: 100% 100%, 28px 28px;
+        pointer-events: none;
+    }
+    /* Floating donut decorations */
+    .cta-donut {
+        position: absolute; pointer-events: none; opacity: 0.12;
+        filter: blur(1px);
+    }
+    .cta-d1 { width: 220px; top: -30px; left: -40px; transform: rotate(-20deg); animation: floatA 7s ease-in-out infinite; }
+    .cta-d2 { width: 160px; bottom: -20px; right: -20px; transform: rotate(15deg); animation: floatB 9s ease-in-out infinite 1s; }
+    .cta-d3 { width: 100px; top: 30%; right: 8%; transform: rotate(30deg); animation: floatC 6s ease-in-out infinite 2s; }
+    .cta-donut img { width: 100%; }
+
+    .cta-inner { position: relative; z-index: 2; max-width: 680px; margin: 0 auto; }
+    .cta-eyebrow {
+        display: inline-block;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.8rem; font-weight: 700; letter-spacing: 2px;
+        color: #fff;
+        background: rgba(180,20,60,0.25);
+        border: 1px solid rgba(255,255,255,0.5);
+        padding: 6px 18px; border-radius: 999px;
+        margin-bottom: 20px;
+    }
+    .cta-headline {
+        font-family: 'Pacifico', cursive;
+        font-size: clamp(2.2rem, 5vw, 3.5rem);
+        color: #5a0020; line-height: 1.2; margin: 0 0 18px;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+    }
+    .cta-headline span {
+        color: white;
+        text-shadow: 0 2px 12px rgba(120,0,40,0.25);
+        text-decoration: underline;
+        text-decoration-color: rgba(255,255,255,0.5);
+        text-underline-offset: 4px;
+    }
+    .cta-sub {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 1rem; color: #5a0020;
+        line-height: 1.7; margin: 0 0 32px;
+        font-weight: 600;
+    }
+    .cta-sub strong { color: #3d0015; font-weight: 800; }
+
+    .cta-trust-row {
+        display: flex; align-items: center; justify-content: center;
+        gap: 24px; flex-wrap: wrap; margin-bottom: 36px;
+    }
+    .cta-trust-item {
+        display: flex; align-items: center; gap: 7px;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.85rem; font-weight: 700; color: #5a0020;
+    }
+
+    .cta-btn-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+    .cta-btn-primary {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: white; color: #FF597B;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 800; font-size: 0.95rem; letter-spacing: 0.5px;
+        padding: 16px 32px; border-radius: 999px; text-decoration: none;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative; overflow: hidden;
+    }
+    .cta-btn-primary::before {
+        content: '';
+        position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,89,123,0.08), transparent);
+        animation: btnShine 2.5s infinite;
+    }
+    .cta-btn-primary:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 40px rgba(0,0,0,0.25); }
+
+    .cta-btn-secondary {
+        display: inline-flex; align-items: center;
+        background: rgba(255,255,255,0.25);
+        color: white;
+        border: 2px solid rgba(255,255,255,0.6);
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700; font-size: 0.95rem;
+        padding: 14px 28px; border-radius: 999px; text-decoration: none;
+        transition: background 0.2s, border-color 0.2s, transform 0.2s;
+        backdrop-filter: blur(4px);
+    }
+    .cta-btn-secondary:hover {
+        background: rgba(255,255,255,0.4);
+        border-color: white;
+        transform: translateY(-2px);
+    }
+    .cta-fine-print {
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.75rem; color: rgba(90,0,32,0.6);
+        font-weight: 600;
+    }
+
+    @media (max-width: 600px) {
+        .section-cta { padding: 72px 24px; }
+        .cta-trust-row { gap: 14px; }
+        .cta-d1, .cta-d2, .cta-d3 { display: none; }
+    }
+
+    /* ---- Countdown sticker (replaces ship sticker) ---- */
+    .sticker-countdown {
+        width: auto !important;
+        height: auto !important;
+        border-radius: 16px !important;
+        padding: 12px 18px !important;
+        background: rgba(20,20,30,0.88) !important;
+        backdrop-filter: blur(8px);
+        border: 1.5px solid rgba(255,89,123,0.4) !important;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.25) !important;
+        flex-direction: row !important;
+        gap: 10px !important;
+        transform: translateX(-50%) !important;
+        color: white !important;
+    }
+    .sticker-countdown i {
+        color: #FF597B !important;
+        font-size: 1.1rem !important;
+        animation: fireShake 0.6s ease-in-out infinite alternate;
+    }
+    .sticker-cd-content {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+    .sticker-cd-label {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: rgba(255,255,255,0.65);
+        text-transform: uppercase;
+    }
+    .sticker-cd-digits {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .sticker-cd-num {
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: #FF597B;
+        background: rgba(255,89,123,0.12);
+        border-radius: 6px;
+        padding: 2px 7px;
+        min-width: 32px;
+        text-align: center;
+    }
+    .sticker-cd-sep {
+        font-weight: 800;
+        color: rgba(255,255,255,0.4);
+        font-size: 1rem;
+        margin-bottom: 2px;
+    }
+
+    /* ============================================================
+       SECTION H: FORM — REDESIGN
+    ============================================================ */
+    .section-form {
+        background: linear-gradient(135deg, #FFF0F3 0%, #FFE4EC 50%, #FFF8F0 100%);
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .form-section-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: 600px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* ---- LEFT: Visual ---- */
+    .form-visual-new {
+        position: relative;
+        background: linear-gradient(145deg, #FF597B 0%, #FF8E9E 60%, #FFB3C1 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 60px 40px;
+    }
+
+    /* Subtle dot pattern over the pink bg */
+    .form-visual-new::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(circle, rgba(255,255,255,0.15) 1.5px, transparent 1.5px);
+        background-size: 28px 28px;
+        pointer-events: none;
+    }
+
+    /* Sprinkles SVG decoration */
+    .form-sprinkles {
+        position: absolute;
+        inset: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+    }
+
+    /* ---- STICKERS ---- */
+    .sticker {
+        position: absolute;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border-radius: 50%;
+        background: white;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.15), inset 0 -2px 0 rgba(0,0,0,0.06);
+        line-height: 1.1;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 800;
+    }
+
+    .sticker-top-left {
+        width: 100px; height: 100px;
+        top: 40px; left: 30px;
+        color: #FF597B;
+        transform: rotate(-18deg);
+        border: 3px dashed #FFB3C1;
+        animation: stickerWobble 3s ease-in-out infinite;
+    }
+    .sticker-top-right {
+        width: 88px; height: 88px;
+        top: 30px; right: 28px;
+        color: white;
+        background: #FF597B;
+        transform: rotate(14deg);
+        border: none;
+        box-shadow: 0 6px 20px rgba(255,89,123,0.45);
+        animation: stickerWobble 3.5s ease-in-out infinite 0.5s;
+    }
+    .sticker-bottom {
+        width: auto; height: auto;
+        border-radius: 999px;
+        padding: 10px 22px;
+        bottom: 36px; left: 50%;
+        transform: translateX(-50%) rotate(-4deg);
+        background: #fff700;
+        color: #333;
+        font-size: 0.82rem;
+        letter-spacing: 1px;
+        flex-direction: row;
+        gap: 8px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+        animation: stickerWobble 4s ease-in-out infinite 1s;
+    }
+    .sticker-bottom i { color: #FF597B; font-size: 1rem; }
+
+    @keyframes stickerWobble {
+        0%, 100% { transform: rotate(-18deg) scale(1); }
+        50%       { transform: rotate(-14deg) scale(1.06); }
+    }
+    .sticker-top-right { animation-name: stickerWobbleR; }
+    @keyframes stickerWobbleR {
+        0%, 100% { transform: rotate(14deg) scale(1); }
+        50%       { transform: rotate(10deg) scale(1.06); }
+    }
+    .sticker-bottom { animation-name: stickerWobbleB; }
+    @keyframes stickerWobbleB {
+        0%, 100% { transform: translateX(-50%) rotate(-4deg) scale(1); }
+        50%       { transform: translateX(-50%) rotate(-2deg) scale(1.04); }
+    }
+
+    .sticker-big   { font-size: 1.3rem; font-weight: 800; line-height: 1; }
+    .sticker-mid   { font-size: 0.65rem; letter-spacing: 2px; opacity: 0.7; }
+    .sticker-small { font-size: 0.58rem; letter-spacing: 1.5px; opacity: 0.85; }
+    .sticker-pct   { font-size: 2rem; font-weight: 900; line-height: 1; }
+
+    /* ---- DONUTS in visual ---- */
+    .form-donut-wrap {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .form-donut-main {
+        width: 340px;
+        filter: drop-shadow(0 20px 40px rgba(0,0,0,0.25));
+        animation: formDonutFloat 4s ease-in-out infinite;
+    }
+    .form-donut-secondary {
+        position: absolute;
+        width: 130px;
+        bottom: -20px; right: -40px;
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+        animation: formDonutFloat 5s ease-in-out infinite 1.5s;
+        opacity: 0.9;
+    }
+    @keyframes formDonutFloat {
+        0%, 100% { transform: translateY(0) rotate(-4deg); }
+        50%       { transform: translateY(-14px) rotate(4deg); }
+    }
+
+    /* ---- RIGHT: Form card ---- */
+    .form-right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 50px 48px;
+        background: white;
+    }
+    .form-card {
+        width: 100%;
+        max-width: 460px;
+    }
+
+    .form-eyebrow {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        color: #FF8E9E;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+    }
+    .form-title {
+        font-family: 'Pacifico', cursive;
+        font-size: 2rem;
+        color: #333;
+        margin: 0 0 18px;
+        line-height: 1.25;
+    }
+    .form-title span { color: #FF597B; }
+
+    /* Checklist */
+    .form-benefits-list {
+        list-style: none;
+        margin: 0 0 28px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .form-benefits-list li {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #555;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .form-benefits-list li i {
+        color: #FF597B;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    /* Fields */
+    .form-fields { display: flex; flex-direction: column; gap: 14px; }
+
+    .form-field-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    .form-field-icon {
+        position: absolute;
+        left: 16px;
+        color: #FFB3C1;
+        font-size: 0.85rem;
+        pointer-events: none;
+        z-index: 1;
+        transition: color 0.2s;
+    }
+    .form-field-group:focus-within .form-field-icon { color: #FF597B; }
+
+    .form-fields input,
+    .form-fields select {
+        width: 100%;
+        padding: 14px 16px 14px 42px;
+        border: 1.5px solid #FFE0E8;
+        border-radius: 12px;
+        background: #FFF8FA;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.9rem;
+        color: #333;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        box-sizing: border-box;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+    .form-fields input:focus,
+    .form-fields select:focus {
+        border-color: #FF597B;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(255,89,123,0.08);
+    }
+    .form-fields input::placeholder { color: #ccc; }
+    .form-select-wrap::after {
+        content: '\f107';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 16px;
+        color: #FFB3C1;
+        pointer-events: none;
+        font-size: 0.85rem;
+    }
+
+    /* Submit button */
+    .btn-submit-new {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #FF597B 0%, #FF8E9E 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 800;
+        font-size: 0.95rem;
+        letter-spacing: 2px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 6px 24px rgba(255,89,123,0.35);
+        margin-top: 4px;
+    }
+    .btn-submit-new:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 32px rgba(255,89,123,0.45);
+    }
+    .btn-submit-new:active { transform: scale(0.98); }
+    .btn-submit-new::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 60%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        animation: btnShine 2.5s infinite;
+    }
+    @keyframes btnShine {
+        to { left: 160%; }
+    }
+
+    .form-note {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.75rem;
+        color: #bbb;
+        text-align: center;
+        margin: 8px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+    .form-note i { color: #FFB3C1; }
+
+    /* Success state */
+    .form-success {
+        text-align: center;
+        padding: 40px 20px;
+        animation: fadeSlideUp 0.5s ease;
+    }
+    .success-donut {
+        font-size: 4rem;
+        animation: successBounce 0.6s cubic-bezier(0.34,1.56,0.64,1);
+        margin-bottom: 16px;
+    }
+    .form-success h3 {
+        font-family: 'Pacifico', cursive;
+        color: #FF597B;
+        font-size: 1.6rem;
+        margin: 0 0 10px;
+    }
+    .form-success p {
+        font-family: 'Quicksand', sans-serif;
+        color: #888;
+        line-height: 1.6;
+    }
+    @keyframes successBounce {
+        from { transform: scale(0) rotate(-20deg); }
+        to   { transform: scale(1) rotate(0deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+        .form-section-wrap { grid-template-columns: 1fr; }
+        .form-visual-new { min-height: 320px; padding: 50px 24px 80px; }
+        .form-donut-main { width: 200px; }
+        .form-right { padding: 40px 24px; }
+        .form-title { font-size: 1.6rem; }
+    }
+    </style>
 </head>
 <body>
 
+<!-- ============ STICKY NAVBAR ============ -->
+<nav class="navbar" id="navbar">
+    <a href="#" class="nav-logo">
+        <!-- Thay src="src/logo.png" bằng đường dẫn logo thật của bạn -->
+        <img src="src/logo.png" alt="Donut Stop Logo" class="nav-logo-img"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <span class="nav-logo-img" style="display:none;">🍩</span>
+        DONUT STOP
+    </a>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="#section-usp">Về chúng tôi</a></li>
+        <li><a href="#section-menu">Sản phẩm</a></li>
+        <li><a href="#section-benefits">Ưu đãi</a></li>
+        <li><a href="#register" class="nav-cta">Mua ngay 🍩</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+    </button>
+</nav>
+
 <!-- ============ SECTION A: HERO ============ -->
 <header class="hero-section">
+    <!-- Background blobs -->
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+
+    <!-- Extra floating donuts -->
     <div class="floating-item donut-1">
-        <img src="https://pngimg.com/d/donut_PNG32.png" alt="Donut Floating 1">
+        <img src="src/dâu.png" alt="Donut 1">
     </div>
     <div class="floating-item donut-2">
-        <img src="https://pngimg.com/d/donut_PNG45.png" alt="Donut Floating 2">
+        <img src="src/caramel.png" alt="Donut 2">
+    </div>
+    <div class="floating-item donut-3">
+        <img src="src/matcha.png" alt="Donut 3">
+    </div>
+    <div class="floating-item donut-4">
+        <img src="src/xicula.png" alt="Donut 4">
+    </div>
+    <div class="floating-item donut-5">
+        <img src="src/2.png" alt="Donut 5">
     </div>
 
-    <div class="container hero-container">
-        <div class="hero-content">
+    <!-- Decorative sprinkles -->
+    <div class="sprinkle" style="width:28px;height:8px;background:#FF597B;top:18%;left:42%;transform:rotate(35deg);animation-delay:0.5s;"></div>
+    <div class="sprinkle" style="width:20px;height:6px;background:#FFB3C1;top:72%;left:65%;transform:rotate(-20deg);animation-delay:1.2s;"></div>
+    <div class="sprinkle" style="width:24px;height:7px;background:#FFD6DF;top:35%;left:12%;transform:rotate(55deg);animation-delay:2s;"></div>
+    <div class="sprinkle" style="width:18px;height:6px;background:#FF8E9E;top:60%;right:18%;transform:rotate(-40deg);animation-delay:0.8s;"></div>
+
+    <!-- SPLIT LAYOUT -->
+    <div class="hero-container">
+        <!-- LEFT: Text content -->
+        <div class="hero-left">
             <span class="welcome-text">WELCOME TO DONUT STOP</span>
             <h1 class="hero-title">DONUT STOP</h1>
             <p class="hero-description">Dừng lại để tận hưởng vị ngọt khó cưỡng!</p>
+
             <div class="promo-pill">
                 <span>MUA 3 TẶNG 1</span>
                 <span class="divider"></span>
                 <span>GIẢM ĐẾN 20%</span>
             </div>
-            <a href="#register" class="btn-main-glow">MUA NGAY TẠI ĐÂY</a>
+
+            <!-- CTA Buttons -->
+            <div class="hero-cta-row">
+                <a href="#register" class="btn-main-glow" id="ctaBtn">MUA NGAY TẠI ĐÂY</a>
+                <a href="#section-menu" class="btn-secondary">
+                    Xem thực đơn <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Social Proof -->
+            <div class="hero-social-proof">
+                <div class="stacked-avatars">
+                    <img src="https://i.pravatar.cc/50?u=1" alt="Customer 1">
+                    <img src="https://i.pravatar.cc/50?u=2" alt="Customer 2">
+                    <img src="https://i.pravatar.cc/50?u=3" alt="Customer 3">
+                    <img src="https://i.pravatar.cc/50?u=4" alt="Customer 4">
+                </div>
+                <div class="social-proof-text">
+                    <strong>2.500+ khách hàng tin yêu</strong>
+                    <span class="stars-row">★★★★★</span> &nbsp;
+                    <span style="color:#aaa; font-size:0.78rem;">4.9/5 đánh giá</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Big hero donut image -->
+        <div class="hero-right">
+            <div class="hero-ring"></div>
+            <div class="hero-ring hero-ring-2"></div>
+            <img
+                src="src/1.png"
+                alt="Hero Donut"
+                class="hero-main-donut"
+                id="heroDonut"
+            >
         </div>
     </div>
 </header>
 
-<!-- ============ SECTION B: USP (card trắng + icon donut cute) ============ -->
-<section class="section-usp">
+<!-- ============ SECTION B: USP ============ -->
+<section class="section-usp" id="section-usp">
     <div class="container">
         <h2 class="usp-section-title">Tại sao chọn Donut Stop?</h2>
         <div class="grid-usp">
             <div class="usp-card-art">
                 <div class="usp-icon">
-                    <!-- Donut hoạt hình cute dạng SVG inline -->
                     <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="36" cy="36" r="30" fill="#FFB3C1"/>
                         <circle cx="36" cy="36" r="12" fill="#FFF0F3"/>
-                        <!-- Sprinkles -->
                         <rect x="20" y="18" width="6" height="3" rx="1.5" fill="#FF597B" transform="rotate(-30 20 18)"/>
                         <rect x="44" y="15" width="6" height="3" rx="1.5" fill="#FF8E9E" transform="rotate(20 44 15)"/>
                         <rect x="50" y="38" width="5" height="3" rx="1.5" fill="#FF597B" transform="rotate(45 50 38)"/>
                         <rect x="14" y="42" width="6" height="3" rx="1.5" fill="#FFD6DF" transform="rotate(-15 14 42)"/>
                         <rect x="30" y="54" width="6" height="3" rx="1.5" fill="#FF597B" transform="rotate(10 30 54)"/>
                         <rect x="46" y="52" width="5" height="3" rx="1.5" fill="#FF8E9E" transform="rotate(-40 46 52)"/>
-                        <!-- Icing drip -->
                         <path d="M24 30 Q28 24 36 24 Q44 24 48 30" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
-                        <!-- Eyes cute -->
                         <circle cx="30" cy="34" r="2" fill="white"/>
                         <circle cx="42" cy="34" r="2" fill="white"/>
                         <circle cx="31" cy="33" r="1" fill="#FF597B"/>
                         <circle cx="43" cy="33" r="1" fill="#FF597B"/>
-                        <!-- Smile -->
                         <path d="M32 39 Q36 43 40 39" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
                     </svg>
                 </div>
                 <h3>Bánh tươi mỗi ngày</h3>
                 <p>Cam kết sản xuất thủ công, mềm mịn và an toàn tuyệt đối. Mọi mẻ bánh đều được kiểm tra kỹ lưỡng trước khi đến tay bạn.</p>
             </div>
-
             <div class="usp-card-art">
                 <div class="usp-icon">
-                    <!-- Donut matcha cute -->
                     <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="36" cy="36" r="30" fill="#95D5B2"/>
                         <circle cx="36" cy="36" r="12" fill="#FFF0F3"/>
-                        <!-- Icing drips matcha -->
                         <ellipse cx="22" cy="28" rx="5" ry="4" fill="white" opacity="0.5"/>
                         <ellipse cx="48" cy="26" rx="4" ry="3" fill="white" opacity="0.5"/>
                         <ellipse cx="52" cy="44" rx="4" ry="4" fill="white" opacity="0.5"/>
                         <ellipse cx="20" cy="46" rx="5" ry="3" fill="white" opacity="0.5"/>
-                        <!-- Stars trang trí -->
                         <text x="26" y="24" font-size="8" fill="#52B788">✦</text>
                         <text x="44" y="22" font-size="6" fill="#52B788">✦</text>
                         <text x="50" y="46" font-size="7" fill="#52B788">✦</text>
                         <text x="16" y="50" font-size="5" fill="#52B788">✦</text>
-                        <!-- Eyes cute -->
                         <circle cx="30" cy="34" r="2.5" fill="white"/>
                         <circle cx="42" cy="34" r="2.5" fill="white"/>
                         <circle cx="31" cy="33" r="1.2" fill="#52B788"/>
                         <circle cx="43" cy="33" r="1.2" fill="#52B788"/>
-                        <!-- Smile -->
                         <path d="M31 39 Q36 44 41 39" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
-                        <!-- Blush -->
                         <ellipse cx="27" cy="38" rx="4" ry="2.5" fill="#FF8E9E" opacity="0.4"/>
                         <ellipse cx="45" cy="38" rx="4" ry="2.5" fill="#FF8E9E" opacity="0.4"/>
                     </svg>
@@ -103,7 +1367,7 @@
 </section>
 
 <!-- ============ SECTION C: BENEFITS ============ -->
-<section class="section-benefits">
+<section class="section-benefits" id="section-benefits">
     <div class="container">
         <h2 class="section-heading-pink">Ưu đãi dành riêng cho bạn</h2>
         <div class="benefits-flex">
@@ -133,44 +1397,111 @@
 
 <!-- ============ SECTION D: BRAND VALUE ============ -->
 <section class="brand-value-section">
-    <div class="container brand-wrapper">
-        <div class="brand-logo-area">
-            <h2 class="logo-font">DONUT STOP</h2>
-            <p class="brand-slogan">"Ngọt ngào từng điểm dừng"</p>
-            <div class="brand-stats">
-                <div class="stat-item">
-                    <div class="stat-num">2500+</div>
-                    <div class="stat-label">KHÁCH HÀNG</div>
+    <div class="bv-bg-pattern"></div>
+
+    <div class="bv-inner">
+        <!-- LEFT: headline + stats -->
+        <div class="bv-left-col">
+            <span class="bv-eyebrow">Tại sao chúng tôi khác biệt?</span>
+            <h2 class="bv-headline">Giá trị cốt lõi<br>của <span>Donut Stop</span></h2>
+            <p class="bv-sub">Không chỉ là bánh ngon — chúng tôi mang đến một trải nghiệm ngọt ngào trọn vẹn, từ nguyên liệu đến từng nụ cười của khách hàng.</p>
+
+            <div class="bv-stats-row">
+                <div class="bv-stat">
+                    <span class="bv-stat-num">2500<sup>+</sup></span>
+                    <span class="bv-stat-lbl">Khách hàng<br>tin yêu</span>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-num">4</div>
-                    <div class="stat-label">HƯƠNG VỊ</div>
+                <div class="bv-stat-divider"></div>
+                <div class="bv-stat">
+                    <span class="bv-stat-num">4</span>
+                    <span class="bv-stat-lbl">Hương vị<br>độc quyền</span>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-num">15K</div>
-                    <div class="stat-label">ĐỒNG GIÁ</div>
+                <div class="bv-stat-divider"></div>
+                <div class="bv-stat">
+                    <span class="bv-stat-num">100<sup>%</sup></span>
+                    <span class="bv-stat-lbl">Thủ công<br>mỗi ngày</span>
                 </div>
             </div>
+
+            <a href="#register" class="bv-cta-btn">
+                Trải nghiệm ngay
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
         </div>
-        <div class="brand-details">
-            <div class="detail-line">
-                <div class="icon-wrap">🌿</div>
-                <div><strong>Tinh tế</strong><span>Nguyên liệu tự nhiên, công thức ít đường.</span></div>
+
+        <!-- RIGHT: 4 value cards in 2x2 grid -->
+        <div class="bv-right-col">
+
+            <div class="bv-card bv-card-accent">
+                <div class="bv-card-icon-wrap">
+                    <!-- Handmade icon: hands holding heart -->
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+                        <path d="M20 10C20 10 13 5 9 9C7 11 7 14 9 16L20 27L31 16C33 14 33 11 31 9C27 5 20 10 20 10Z" fill="#c0204a"/>
+                        <path d="M14 30C10 30 6 33 6 37H34C34 33 30 30 26 30" stroke="#c0204a" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="bv-card-body">
+                    <h3 class="bv-card-title">Làm bằng tình yêu</h3>
+                    <p class="bv-card-desc">Mỗi chiếc bánh là một tác phẩm thủ công, được nặn và trang trí tỉ mỉ từng chi tiết — không dây chuyền, không công nghiệp.</p>
+                    <span class="bv-card-tag">🕗 Sản xuất sáng sớm mỗi ngày</span>
+                </div>
             </div>
-            <div class="detail-line">
-                <div class="icon-wrap">🛡️</div>
-                <div><strong>An toàn</strong><span>Quy trình kiểm soát vệ sinh nghiêm ngặt.</span></div>
+
+            <div class="bv-card bv-card-green">
+                <div class="bv-card-icon-wrap bv-icon-green">
+                    <!-- Leaf / natural icon - dark pink -->
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+                        <path d="M32 6C32 6 34 18 24 26C17 31 6 32 6 32C6 32 6 22 12 16C18 10 32 6 32 6Z" fill="#c0204a"/>
+                        <path d="M6 32L19 18" stroke="#8b0030" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="32" cy="6" r="3" fill="#e05070"/>
+                    </svg>
+                </div>
+                <div class="bv-card-body">
+                    <h3 class="bv-card-title">Nguyên liệu sạch</h3>
+                    <p class="bv-card-desc">Bột mì premium, không phẩm màu nhân tạo, ít đường hơn 30% thị trường. Ngọt vừa phải — thưởng thức mà không lo.</p>
+                    <span class="bv-card-tag bv-tag-green">🌱 Không chất bảo quản</span>
+                </div>
             </div>
-            <div class="detail-line">
-                <div class="icon-wrap">💰</div>
-                <div><strong>Giá hợp lý</strong><span>Phù hợp túi tiền học sinh, sinh viên.</span></div>
+
+            <div class="bv-card bv-card-blue">
+                <div class="bv-card-icon-wrap bv-icon-blue">
+                    <!-- Shield / safety icon - dark pink -->
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+                        <path d="M20 4L6 10V20C6 28 12 34 20 36C28 34 34 28 34 20V10L20 4Z" fill="rgba(192,32,74,0.25)" stroke="#c0204a" stroke-width="2"/>
+                        <path d="M14 20L18 24L26 16" stroke="#8b0030" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="bv-card-body">
+                    <h3 class="bv-card-title">An toàn tuyệt đối</h3>
+                    <p class="bv-card-desc">Quy trình vệ sinh thực phẩm nghiêm ngặt từ khâu chuẩn bị đến đóng gói. Mỗi mẻ bánh được kiểm tra chất lượng trước khi giao.</p>
+                    <span class="bv-card-tag bv-tag-blue">🛡️ Chuẩn VSATTP</span>
+                </div>
             </div>
+
+            <div class="bv-card bv-card-orange">
+                <div class="bv-card-icon-wrap bv-icon-orange">
+                    <!-- Price tag icon - dark pink -->
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+                        <rect x="4" y="16" width="22" height="18" rx="3" fill="rgba(192,32,74,0.2)" stroke="#c0204a" stroke-width="2"/>
+                        <circle cx="10" cy="22" r="2.5" fill="#c0204a"/>
+                        <path d="M14 22H22M14 28H22" stroke="#8b0030" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M22 10L36 10L36 24" stroke="#c0204a" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M29 4L36 10L29 17" stroke="#c0204a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="bv-card-body">
+                    <h3 class="bv-card-title">Giá sinh viên thật sự</h3>
+                    <p class="bv-card-desc">Đồng giá 15.000đ cho tất cả hương vị — không phân biệt, không ẩn phí. Bánh ngon không cần đắt tiền mới ngon.</p>
+                    <span class="bv-card-tag bv-tag-orange">💸 Đồng giá 15.000đ</span>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
 
 <!-- ============ SECTION E: MENU ============ -->
-<section class="section-menu">
+<section class="section-menu" id="section-menu">
     <div class="container">
         <div class="menu-banner">
             <h2>BẢNG GIÁ KHUYẾN MÃI</h2>
@@ -305,26 +1636,155 @@
 
 <!-- ============ SECTION H: FORM ============ -->
 <section class="section-form" id="register">
-    <div class="container form-box">
-        <div class="form-visual">
-            <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=800&q=80" alt="Combo Donut">
+    <div class="form-section-wrap">
+
+        <!-- LEFT: Donut visual + stickers -->
+        <div class="form-visual-new">
+
+            <!-- Sticker: MUA 3 TẶNG 1 -->
+            <div class="sticker sticker-top-left">
+                <span class="sticker-big">MUA 3</span>
+                <span class="sticker-mid">TẶNG</span>
+                <span class="sticker-big">1</span>
+            </div>
+
+            <!-- Sticker: GIẢM 20% -->
+            <div class="sticker sticker-top-right">
+                <span class="sticker-small">GIẢM ĐẾN</span>
+                <span class="sticker-pct">20%</span>
+            </div>
+
+            <!-- Main donut image -->
+            <div class="form-donut-wrap">
+                <img src="src/dâu.png" alt="Strawberry Donut" class="form-donut-main" id="formDonutImg">
+                <!-- Second floating donut -->
+                <img src="src/matcha.png" alt="Matcha Donut" class="form-donut-secondary">
+            </div>
+
+            <!-- Sticker: ƯU ĐÃI SẮP KẾT THÚC (countdown) -->
+            <div class="sticker sticker-bottom sticker-countdown">
+                <i class="fas fa-fire"></i>
+                <div class="sticker-cd-content">
+                    <span class="sticker-cd-label">Ưu đãi kết thúc sau</span>
+                    <div class="sticker-cd-digits">
+                        <span class="sticker-cd-num" id="cd-h2">08</span>
+                        <span class="sticker-cd-sep">:</span>
+                        <span class="sticker-cd-num" id="cd-m2">47</span>
+                        <span class="sticker-cd-sep">:</span>
+                        <span class="sticker-cd-num" id="cd-s2">23</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decorative sprinkles SVG -->
+            <svg class="form-sprinkles" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+                <rect x="30" y="60"  width="28" height="8" rx="4" fill="#FF597B" transform="rotate(30 30 60)"  opacity="0.7"/>
+                <rect x="340" y="80" width="22" height="7" rx="3" fill="#FFB3C1" transform="rotate(-20 340 80)" opacity="0.7"/>
+                <rect x="60" y="420" width="25" height="7" rx="3" fill="#FF8E9E" transform="rotate(50 60 420)"  opacity="0.6"/>
+                <rect x="320" y="400"width="20" height="6" rx="3" fill="#FF597B" transform="rotate(-40 320 400)"opacity="0.6"/>
+                <rect x="180" y="30" width="18" height="6" rx="3" fill="#FFD6DF" transform="rotate(15 180 30)"  opacity="0.5"/>
+                <rect x="20" y="250" width="24" height="7" rx="3" fill="#FF597B" transform="rotate(-30 20 250)" opacity="0.5"/>
+                <rect x="360" y="260"width="20" height="6" rx="3" fill="#FFB3C1" transform="rotate(45 360 260)" opacity="0.5"/>
+                <circle cx="50"  cy="160" r="5" fill="#FF597B"  opacity="0.4"/>
+                <circle cx="350" cy="180" r="4" fill="#FF8E9E"  opacity="0.4"/>
+                <circle cx="100" cy="460" r="6" fill="#FFD6DF"  opacity="0.4"/>
+                <circle cx="300" cy="450" r="5" fill="#FF597B"  opacity="0.4"/>
+            </svg>
         </div>
-        <div class="form-inputs">
-            <h2>Ưu đãi hấp dẫn đang chờ bạn!</h2>
-            <form>
-                <input type="text" placeholder="Họ và Tên" required>
-                <input type="tel" placeholder="Số điện thoại" required>
-                <input type="email" placeholder="Email nhận voucher">
-                <select required>
-                    <option value="">Vị bánh yêu thích</option>
-                    <option>Strawberry Sprinkles</option>
-                    <option>Double Chocolate</option>
-                    <option>Caramel Nutty</option>
-                    <option>Matcha Delight</option>
-                </select>
-                <button type="submit" class="btn-submit">NHẬN ƯU ĐÃI NGAY</button>
-            </form>
+
+        <!-- RIGHT: Form -->
+        <div class="form-right">
+            <div class="form-card">
+                <!-- Header -->
+                <div class="form-card-header">
+                    <p class="form-eyebrow">🍩 Chỉ mất 30 giây</p>
+                    <h2 class="form-title">Nhận ưu đãi<br><span>dành riêng cho bạn!</span></h2>
+                    <!-- Benefit checklist -->
+                    <ul class="form-benefits-list">
+                        <li><i class="fas fa-check-circle"></i> Voucher giảm 20% gửi qua email</li>
+                        <li><i class="fas fa-check-circle"></i> Tham gia chương trình tích điểm</li>
+                    </ul>
+                </div>
+
+                <!-- Form fields -->
+                <form class="form-fields" onsubmit="handleFormSubmit(event)">
+                    <div class="form-field-group">
+                        <i class="fas fa-user form-field-icon"></i>
+                        <input type="text" placeholder="Họ và Tên" required>
+                    </div>
+                    <div class="form-field-group">
+                        <i class="fas fa-phone form-field-icon"></i>
+                        <input type="tel" placeholder="Số điện thoại" required>
+                    </div>
+                    <div class="form-field-group">
+                        <i class="fas fa-envelope form-field-icon"></i>
+                        <input type="email" placeholder="Email nhận voucher">
+                    </div>
+                    <div class="form-field-group form-select-wrap">
+                        <i class="fas fa-cookie-bite form-field-icon"></i>
+                        <select required>
+                            <option value="">Vị bánh yêu thích</option>
+                            <option>🍓 Strawberry Sprinkles</option>
+                            <option>🍫 Double Chocolate</option>
+                            <option>🍮 Caramel Nutty</option>
+                            <option>🍵 Matcha Delight</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit-new">
+                        <span class="btn-submit-text">NHẬN ƯU ĐÃI NGAY 🎁</span>
+                    </button>
+                </form>
+
+                <!-- Success state (hidden by default) -->
+                <div class="form-success" id="formSuccess" style="display:none;">
+                    <div class="success-donut">🍩</div>
+                    <h3>Đặt thành công!</h3>
+                    <p>Voucher ưu đãi đã được gửi về email của bạn.<br>Cảm ơn bạn đã tin yêu Donut Stop! 💕</p>
+                </div>
+            </div>
         </div>
+    </div>
+</section>
+
+<!-- ============ SECTION I: CALL TO ACTION ============ -->
+<section class="section-cta">
+    <!-- Floating donuts background -->
+    <div class="cta-donut cta-d1"><img src="src/dâu.png" alt=""></div>
+    <div class="cta-donut cta-d2"><img src="src/matcha.png" alt=""></div>
+    <div class="cta-donut cta-d3"><img src="src/caramel.png" alt=""></div>
+
+    <div class="cta-inner">
+        <span class="cta-eyebrow">🍩 Còn chần chừ gì nữa?</span>
+        <h2 class="cta-headline">Vị ngọt đang<br>chờ <span>bạn ghé thăm!</span></h2>
+        <p class="cta-sub">Đặt ngay hôm nay — nhận ưu đãi <strong>MUA 3 TẶNG 1</strong> và voucher giảm <strong>20%</strong> cho đơn đầu tiên.</p>
+
+        <div class="cta-trust-row">
+            <div class="cta-trust-item">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="rgba(255,255,255,0.2)"/><path d="M6 10L8.5 12.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Bánh tươi mỗi ngày</span>
+            </div>
+            <div class="cta-trust-item">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="rgba(255,255,255,0.2)"/><path d="M6 10L8.5 12.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Giao hàng nhanh & đẹp</span>
+            </div>
+            <div class="cta-trust-item">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="rgba(255,255,255,0.2)"/><path d="M6 10L8.5 12.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Chỉ 15.000đ / cái</span>
+            </div>
+        </div>
+
+        <div class="cta-btn-row">
+            <a href="#register" class="cta-btn-primary">
+                Nhận ưu đãi ngay
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.75 9H14.25M14.25 9L10.5 5.25M14.25 9L10.5 12.75" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="#section-menu" class="cta-btn-secondary">Xem thực đơn</a>
+        </div>
+
+        <p class="cta-fine-print">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><circle cx="7" cy="7" r="6" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><path d="M7 6V10M7 4.5V5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Ưu đãi có thời hạn · Không cần thanh toán trước · Liên hệ qua TikTok, Facebook, Instagram
+        </p>
     </div>
 </section>
 
@@ -349,7 +1809,6 @@
             </div>
             <div class="f-col-social">
                 <h4>KẾT NỐI</h4>
-                <!-- Icon tròn, không có text -->
                 <div class="social-pills">
                     <a href="#" title="TikTok"><i class="fab fa-tiktok"></i></a>
                     <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -372,5 +1831,107 @@
     </div>
 </footer>
 
+<!-- ============ JAVASCRIPT ============ -->
+<script>
+// ---- Sticky navbar scroll effect ----
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ---- Mobile hamburger ----
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+});
+// Close nav when link clicked
+navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+
+// ---- CTA Button ripple effect ----
+document.getElementById('ctaBtn').addEventListener('click', function(e) {
+    const btn = this;
+    const ripple = document.createElement('span');
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    ripple.classList.add('ripple');
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+    ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+    btn.appendChild(ripple);
+    ripple.addEventListener('animationend', () => ripple.remove());
+});
+
+// ---- Parallax floating donuts on mousemove ----
+const floaters = document.querySelectorAll('.floating-item');
+document.addEventListener('mousemove', (e) => {
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    const dx = (e.clientX - cx) / cx;
+    const dy = (e.clientY - cy) / cy;
+    floaters.forEach((el, i) => {
+        const depth = (i % 3 + 1) * 6;
+        el.style.transform = `translate(${dx * depth}px, ${dy * depth}px)`;
+    });
+});
+
+// ---- Countdown timer ----
+(function() {
+    // Set end time: 8h 47m 23s from now
+    const endTime = Date.now() + (8 * 3600 + 47 * 60 + 23) * 1000;
+    const cdH = document.getElementById('cd-h');
+    const cdM = document.getElementById('cd-m');
+    const cdS = document.getElementById('cd-s');
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function animateNum(el) {
+        el.style.transform = 'translateY(-4px)';
+        setTimeout(() => el.style.transform = '', 150);
+    }
+
+    // Sticker countdown elements
+    const stickerH = document.getElementById('cd-h2');
+    const stickerM = document.getElementById('cd-m2');
+    const stickerS = document.getElementById('cd-s2');
+
+    let prevS = -1;
+    setInterval(() => {
+        const remaining = Math.max(0, endTime - Date.now());
+        const h = Math.floor(remaining / 3600000);
+        const m = Math.floor((remaining % 3600000) / 60000);
+        const s = Math.floor((remaining % 60000) / 1000);
+
+        if (s !== prevS) {
+            cdH.textContent = pad(h);
+            cdM.textContent = pad(m);
+            cdS.textContent = pad(s);
+            if (stickerH) stickerH.textContent = pad(h);
+            if (stickerM) stickerM.textContent = pad(m);
+            if (stickerS) stickerS.textContent = pad(s);
+            animateNum(cdS);
+            if (s === 59) { animateNum(cdM); }
+            if (s === 59 && m === 59) { animateNum(cdH); }
+            prevS = s;
+        }
+    }, 200);
+})();
+
+// ---- Form submit with success state ----
+function handleFormSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const card = form.closest('.form-card');
+    form.style.opacity = '0';
+    form.style.transform = 'scale(0.95)';
+    form.style.transition = 'opacity 0.3s, transform 0.3s';
+    setTimeout(() => {
+        form.style.display = 'none';
+        const success = card.querySelector('#formSuccess');
+        success.style.display = 'block';
+    }, 300);
+}
+</script>
 </body>
 </html>
